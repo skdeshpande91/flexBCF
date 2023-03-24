@@ -1,0 +1,5 @@
+export("flexBCF")
+export("predict_flexBART")
+export("compute_SATT")
+export("compute_weighted_SATT")
+useDynLib("flexBCF")

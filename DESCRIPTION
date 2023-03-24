@@ -1,0 +1,11 @@
+Package: flexBCF
+Type: Package
+Title: Fast & flexible implementation of Bayesian Causal Forests
+Version: 1.0
+Date: 2022-03-29
+Author: Sameer K. Deshpande
+Maintainer: Questions and comments to  <sameer.deshpande@wisc.edu>
+Description: A faster and more flexible implementation of Hahn et al. (2020)'s Bayesian Causal Forests written for the 2022 ACIC Data Challenge
+License: GNU GPL v3.0
+Depends: Rcpp (>= 1.0.3), RcppArmadillo
+LinkingTo: Rcpp, RcppArmadillo
