@@ -1,16 +1,21 @@
+// reads in a list of tree draws
+// matrix of predictor values
+// returns the sample average and 90% interval
+// defined by the 5% & 95% sample quantiles
+
 #include "funs.h"
 
-// [[Rcpp::export()]]
-arma::mat predict_flexBART(Rcpp::List tree_draws,
-                           Rcpp::NumericMatrix tX_cont,
-                           Rcpp::IntegerMatrix tX_cat,
-                           bool treat,
-                           double y_mean,
-                           double y_sd,
-                           Rcpp::Nullable<Rcpp::List> cat_levels_list,
-                           bool verbose = true, int print_every = 50)
+// [[Rcpp::export(".compute_SATT")]]
+Rcpp::List compute_SATT(Rcpp::List tree_draws,
+                        Rcpp::NumericMatrix tX_cont,
+                        Rcpp::IntegerMatrix tX_cat,
+                        bool treat,
+                        double y_mean,
+                        double y_sd,
+                        Rcpp::NumericVector probs,
+                        Rcpp::Nullable<Rcpp::List> cat_levels_list,
+                        bool verbose = true, int print_every = 50)
 {
-
   set_str_conversion set_str;
   
   int n = 0;
@@ -19,8 +24,6 @@ arma::mat predict_flexBART(Rcpp::List tree_draws,
   
   parse_training_data(n, p_cont, p_cat, tX_cont, tX_cat);
   int p = p_cont + p_cat;
-  
-  
   
   // actually we need to look at categorical levels list to get K.
   // maybe we can just read in K?
@@ -68,7 +71,8 @@ arma::mat predict_flexBART(Rcpp::List tree_draws,
   
   std::vector<double> allfit(n);
   //arma::mat pred_out(n, nd);
-  arma::mat pred_out(nd,n);
+  //arma::mat pred_out(nd,n);
+  arma::vec pred_out = arma::zeros<arma::vec>(nd);
 
   for(int iter = 0; iter < nd; iter++){
     if( (iter%print_every == 0)){
@@ -94,19 +98,36 @@ arma::mat predict_flexBART(Rcpp::List tree_draws,
       if(treat) fit_ensemble_tau(allfit, t_vec, di);
       else fit_ensemble_mu(allfit, t_vec, di);
       //for(int i = 0; i < n; i++) pred_out(i,iter) = allfit[i];
-      for(int i = 0; i < n; i++) pred_out(iter,i) = allfit[i];
-
+      for(int i = 0; i < n; i++) pred_out(iter) += allfit[i]; //pred_out contains the *sum* of all evaluations
     } // closes if/else checking that we have M strings for the draw of the ensemble
   } // closes loop over all draws of the ensemble
- 
+  
+  // remember to normalize the entres in pred_out!
+  pred_out /= (double) n;
+  
   if(treat){
-    // multiply the tau function by y_sd (to undo the standardization)
+    // multiply tau evaluations by y_sd to undo standardization
     pred_out *= y_sd;
   } else{
-    // multiply the mu function by y_sd AND add back y_mean (to undo the standardization)
+    // multiply mu evaluations by y_sd AND add y_mean to undo standardization
     pred_out *= y_sd;
     pred_out += y_mean;
   }
   
-  return pred_out;
+  //arma::vec P = { 0.05, 0.95 };
+  arma::vec P = arma::zeros<arma::vec>(probs.size());
+  for(int i = 0; i < probs.size(); ++i) P(i) = probs(i);
+  
+  arma::vec Q = arma::quantile(pred_out, P);
+  Rcpp::NumericVector interval(probs.size());
+  for(int i = 0; i < probs.size(); ++i) interval[i] = Q(i);
+  //Rcpp::NumericVector interval(2);
+  //interval[0] = Q(0);
+  //interval[1] = Q(1);
+  double fitted_mean = arma::as_scalar(arma::mean(pred_out));
+  
+  Rcpp::List results;
+  results["mean"] = fitted_mean;
+  results["quantiles"] = interval;
+  return results;
 }

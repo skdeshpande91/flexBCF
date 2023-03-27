@@ -12,8 +12,8 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // compute_SATT
-Rcpp::List compute_SATT(Rcpp::List tree_draws, Rcpp::NumericMatrix tX_cont, Rcpp::IntegerMatrix tX_cat, bool treat, double y_mean, double y_sd, Rcpp::Nullable<Rcpp::List> cat_levels_list, bool verbose, int print_every);
-RcppExport SEXP _flexBCF_compute_SATT(SEXP tree_drawsSEXP, SEXP tX_contSEXP, SEXP tX_catSEXP, SEXP treatSEXP, SEXP y_meanSEXP, SEXP y_sdSEXP, SEXP cat_levels_listSEXP, SEXP verboseSEXP, SEXP print_everySEXP) {
+Rcpp::List compute_SATT(Rcpp::List tree_draws, Rcpp::NumericMatrix tX_cont, Rcpp::IntegerMatrix tX_cat, bool treat, double y_mean, double y_sd, Rcpp::NumericVector probs, Rcpp::Nullable<Rcpp::List> cat_levels_list, bool verbose, int print_every);
+RcppExport SEXP _flexBCF_compute_SATT(SEXP tree_drawsSEXP, SEXP tX_contSEXP, SEXP tX_catSEXP, SEXP treatSEXP, SEXP y_meanSEXP, SEXP y_sdSEXP, SEXP probsSEXP, SEXP cat_levels_listSEXP, SEXP verboseSEXP, SEXP print_everySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -23,16 +23,17 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< bool >::type treat(treatSEXP);
     Rcpp::traits::input_parameter< double >::type y_mean(y_meanSEXP);
     Rcpp::traits::input_parameter< double >::type y_sd(y_sdSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type probs(probsSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::List> >::type cat_levels_list(cat_levels_listSEXP);
     Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
     Rcpp::traits::input_parameter< int >::type print_every(print_everySEXP);
-    rcpp_result_gen = Rcpp::wrap(compute_SATT(tree_draws, tX_cont, tX_cat, treat, y_mean, y_sd, cat_levels_list, verbose, print_every));
+    rcpp_result_gen = Rcpp::wrap(compute_SATT(tree_draws, tX_cont, tX_cat, treat, y_mean, y_sd, probs, cat_levels_list, verbose, print_every));
     return rcpp_result_gen;
 END_RCPP
 }
 // compute_weighted_SATT
-Rcpp::List compute_weighted_SATT(Rcpp::List tree_draws, Rcpp::NumericMatrix tX_cont, Rcpp::IntegerMatrix tX_cat, Rcpp::NumericVector weights, bool treat, double y_mean, double y_sd, Rcpp::Nullable<Rcpp::List> cat_levels_list, bool verbose, int print_every);
-RcppExport SEXP _flexBCF_compute_weighted_SATT(SEXP tree_drawsSEXP, SEXP tX_contSEXP, SEXP tX_catSEXP, SEXP weightsSEXP, SEXP treatSEXP, SEXP y_meanSEXP, SEXP y_sdSEXP, SEXP cat_levels_listSEXP, SEXP verboseSEXP, SEXP print_everySEXP) {
+Rcpp::List compute_weighted_SATT(Rcpp::List tree_draws, Rcpp::NumericMatrix tX_cont, Rcpp::IntegerMatrix tX_cat, Rcpp::NumericVector weights, bool treat, double y_mean, double y_sd, Rcpp::NumericVector probs, Rcpp::Nullable<Rcpp::List> cat_levels_list, bool verbose, int print_every);
+RcppExport SEXP _flexBCF_compute_weighted_SATT(SEXP tree_drawsSEXP, SEXP tX_contSEXP, SEXP tX_catSEXP, SEXP weightsSEXP, SEXP treatSEXP, SEXP y_meanSEXP, SEXP y_sdSEXP, SEXP probsSEXP, SEXP cat_levels_listSEXP, SEXP verboseSEXP, SEXP print_everySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -43,10 +44,11 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< bool >::type treat(treatSEXP);
     Rcpp::traits::input_parameter< double >::type y_mean(y_meanSEXP);
     Rcpp::traits::input_parameter< double >::type y_sd(y_sdSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type probs(probsSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::List> >::type cat_levels_list(cat_levels_listSEXP);
     Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
     Rcpp::traits::input_parameter< int >::type print_every(print_everySEXP);
-    rcpp_result_gen = Rcpp::wrap(compute_weighted_SATT(tree_draws, tX_cont, tX_cat, weights, treat, y_mean, y_sd, cat_levels_list, verbose, print_every));
+    rcpp_result_gen = Rcpp::wrap(compute_weighted_SATT(tree_draws, tX_cont, tX_cat, weights, treat, y_mean, y_sd, probs, cat_levels_list, verbose, print_every));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -113,8 +115,8 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_flexBCF_compute_SATT", (DL_FUNC) &_flexBCF_compute_SATT, 9},
-    {"_flexBCF_compute_weighted_SATT", (DL_FUNC) &_flexBCF_compute_weighted_SATT, 10},
+    {"_flexBCF_compute_SATT", (DL_FUNC) &_flexBCF_compute_SATT, 10},
+    {"_flexBCF_compute_weighted_SATT", (DL_FUNC) &_flexBCF_compute_weighted_SATT, 11},
     {"_flexBCF_flexBCF", (DL_FUNC) &_flexBCF_flexBCF, 32},
     {"_flexBCF_predict_flexBART", (DL_FUNC) &_flexBCF_predict_flexBART, 9},
     {NULL, NULL, 0}

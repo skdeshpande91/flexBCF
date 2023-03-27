@@ -5,21 +5,25 @@
 
 #include "funs.h"
 
-// [[Rcpp::export()]]
-Rcpp::List compute_SATT(Rcpp::List tree_draws,
-                        Rcpp::NumericMatrix tX_cont,
-                        Rcpp::IntegerMatrix tX_cat,
-                        bool treat,
-                        double y_mean,
-                        double y_sd,
-                        Rcpp::Nullable<Rcpp::List> cat_levels_list,
-                        bool verbose = true, int print_every = 50)
+// [[Rcpp::export(.compute_weighted_SATT)]]
+Rcpp::List compute_weighted_SATT(Rcpp::List tree_draws,
+                                 Rcpp::NumericMatrix tX_cont,
+                                 Rcpp::IntegerMatrix tX_cat,
+                                 Rcpp::NumericVector weights,
+                                 bool treat,
+                                 double y_mean,
+                                 double y_sd,
+                                 Rcpp::NumericVector probs,
+                                 Rcpp::Nullable<Rcpp::List> cat_levels_list,
+                                 bool verbose = true, int print_every = 50)
 {
   set_str_conversion set_str;
   
   int n = 0;
   int p_cont = 0;
   int p_cat = 0;
+  
+
   
   parse_training_data(n, p_cont, p_cat, tX_cont, tX_cat);
   int p = p_cont + p_cat;
@@ -73,6 +77,10 @@ Rcpp::List compute_SATT(Rcpp::List tree_draws,
   //arma::mat pred_out(nd,n);
   arma::vec pred_out = arma::zeros<arma::vec>(nd);
 
+  double weight_sum = 0.0;
+  for(int i = 0; i < n; i++) weight_sum += weights(i);
+  
+  
   for(int iter = 0; iter < nd; iter++){
     if( (iter%print_every == 0)){
       Rcpp::Rcout << "  Iteration: " << iter << " of " << nd <<std::endl;
@@ -97,12 +105,13 @@ Rcpp::List compute_SATT(Rcpp::List tree_draws,
       if(treat) fit_ensemble_tau(allfit, t_vec, di);
       else fit_ensemble_mu(allfit, t_vec, di);
       //for(int i = 0; i < n; i++) pred_out(i,iter) = allfit[i];
-      for(int i = 0; i < n; i++) pred_out(iter) += allfit[i]; //pred_out contains the *sum* of all evaluations
+      for(int i = 0; i < n; i++) pred_out(iter) += weights(i) * allfit[i]; //pred_out contains the *sum* of all evaluations
     } // closes if/else checking that we have M strings for the draw of the ensemble
   } // closes loop over all draws of the ensemble
   
   // remember to normalize the entres in pred_out!
-  pred_out /= (double) n;
+  //pred_out /= (double) n;
+  pred_out /= weight_sum;
   
   if(treat){
     // multiply tau evaluations by y_sd to undo standardization
@@ -113,15 +122,20 @@ Rcpp::List compute_SATT(Rcpp::List tree_draws,
     pred_out += y_mean;
   }
   
-  arma::vec P = { 0.05, 0.95 };
+  //arma::vec P = { 0.05, 0.95 };
+  arma::vec P = arma::zeros<arma::vec>(probs.size());
+  for(int i = 0; i < probs.size(); ++i) P(i) = probs[i];
+
   arma::vec Q = arma::quantile(pred_out, P);
-  Rcpp::NumericVector interval(2);
-  interval[0] = Q(0);
-  interval[1] = Q(1);
+  Rcpp::NumericVector interval(probs.size());
+  for(int i = 0; i < probs.size(); ++i) interval[i] = Q(i);
+  //Rcpp::NumericVector interval(2);
+  //interval[0] = Q(0);
+  //interval[1] = Q(1);
   double fitted_mean = arma::as_scalar(arma::mean(pred_out));
   
   Rcpp::List results;
   results["mean"] = fitted_mean;
-  results["interval"] = interval;
+  results["quantiles"] = interval;
   return results;
 }

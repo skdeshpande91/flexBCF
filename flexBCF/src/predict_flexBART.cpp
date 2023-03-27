@@ -1,31 +1,26 @@
-// reads in a list of tree draws
-// matrix of predictor values
-// returns the sample average and 90% interval
-// defined by the 5% & 95% sample quantiles
-
 #include "funs.h"
 
-// [[Rcpp::export()]]
-Rcpp::List compute_weighted_SATT(Rcpp::List tree_draws,
-                                 Rcpp::NumericMatrix tX_cont,
-                                 Rcpp::IntegerMatrix tX_cat,
-                                 Rcpp::NumericVector weights,
-                                 bool treat,
-                                 double y_mean,
-                                 double y_sd,
-                                 Rcpp::Nullable<Rcpp::List> cat_levels_list,
-                                 bool verbose = true, int print_every = 50)
+// [[Rcpp::export(".predict_tree_ensemble")]]
+arma::mat predict_flexBART(Rcpp::List tree_draws,
+                           Rcpp::NumericMatrix tX_cont,
+                           Rcpp::IntegerMatrix tX_cat,
+                           bool treat,
+                           double y_mean,
+                           double y_sd,
+                           Rcpp::Nullable<Rcpp::List> cat_levels_list,
+                           bool verbose = true, int print_every = 50)
 {
+
   set_str_conversion set_str;
   
   int n = 0;
   int p_cont = 0;
   int p_cat = 0;
   
-
-  
   parse_training_data(n, p_cont, p_cat, tX_cont, tX_cat);
   int p = p_cont + p_cat;
+  
+  
   
   // actually we need to look at categorical levels list to get K.
   // maybe we can just read in K?
@@ -73,13 +68,8 @@ Rcpp::List compute_weighted_SATT(Rcpp::List tree_draws,
   
   std::vector<double> allfit(n);
   //arma::mat pred_out(n, nd);
-  //arma::mat pred_out(nd,n);
-  arma::vec pred_out = arma::zeros<arma::vec>(nd);
+  arma::mat pred_out(nd,n);
 
-  double weight_sum = 0.0;
-  for(int i = 0; i < n; i++) weight_sum += weights(i);
-  
-  
   for(int iter = 0; iter < nd; iter++){
     if( (iter%print_every == 0)){
       Rcpp::Rcout << "  Iteration: " << iter << " of " << nd <<std::endl;
@@ -104,32 +94,19 @@ Rcpp::List compute_weighted_SATT(Rcpp::List tree_draws,
       if(treat) fit_ensemble_tau(allfit, t_vec, di);
       else fit_ensemble_mu(allfit, t_vec, di);
       //for(int i = 0; i < n; i++) pred_out(i,iter) = allfit[i];
-      for(int i = 0; i < n; i++) pred_out(iter) += weights(i) * allfit[i]; //pred_out contains the *sum* of all evaluations
+      for(int i = 0; i < n; i++) pred_out(iter,i) = allfit[i];
+
     } // closes if/else checking that we have M strings for the draw of the ensemble
   } // closes loop over all draws of the ensemble
-  
-  // remember to normalize the entres in pred_out!
-  //pred_out /= (double) n;
-  pred_out /= weight_sum;
-  
+ 
   if(treat){
-    // multiply tau evaluations by y_sd to undo standardization
+    // multiply the tau function by y_sd (to undo the standardization)
     pred_out *= y_sd;
   } else{
-    // multiply mu evaluations by y_sd AND add y_mean to undo standardization
+    // multiply the mu function by y_sd AND add back y_mean (to undo the standardization)
     pred_out *= y_sd;
     pred_out += y_mean;
   }
   
-  arma::vec P = { 0.05, 0.95 };
-  arma::vec Q = arma::quantile(pred_out, P);
-  Rcpp::NumericVector interval(2);
-  interval[0] = Q(0);
-  interval[1] = Q(1);
-  double fitted_mean = arma::as_scalar(arma::mean(pred_out));
-  
-  Rcpp::List results;
-  results["mean"] = fitted_mean;
-  results["interval"] = interval;
-  return results;
+  return pred_out;
 }

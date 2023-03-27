@@ -1,0 +1,5 @@
+export("flexBCF")
+export("get_tree_fits")
+export("average_tree_fits")
+importFrom(Rcpp, evalCpp)
+useDynLib("flexBCF")

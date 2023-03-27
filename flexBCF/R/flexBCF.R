@@ -54,12 +54,13 @@ flexBCF <- function(Y_train,
                   nd = nd, burn = burn, thin = thin,
                   verbose = verbose, print_every = print_every)
   results <- list()
-  results[["sigma_draws"]] <- fit$sigma
+  results[["sigma"]] <- fit$sigma
   results[["mu_trees"]] <- fit$mu
   results[["tau_trees"]] <- fit$tau
   results[["varcount_mu"]] <- fit$varcount_mu
   results[["varcount_tau"]] <- fit$varcount_tau
   results[["y_mean"]] <- y_mean
   results[["y_sd"]] <- y_sd
+  results[["cat_levels_list"]] <- list(mu = cat_levels_list_mu, tau = cat_levels_list_tau)
   return(results)
 }
