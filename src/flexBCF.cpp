@@ -4,7 +4,7 @@
 
 // convention: all control subjects listed first
 
-// [[Rcpp::export()]]
+// [[Rcpp::export(".flex_BCF")]]
 Rcpp::List flexBCF(Rcpp::NumericVector Y_train,
                    Rcpp::IntegerVector treated,
                    Rcpp::NumericMatrix tX_cont_mu_train,
