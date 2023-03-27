@@ -5,7 +5,7 @@
 
 #include "funs.h"
 
-// [[Rcpp::export(.compute_weighted_SATT)]]
+// [[Rcpp::export(".compute_weighted_SATT")]]
 Rcpp::List compute_weighted_SATT(Rcpp::List tree_draws,
                                  Rcpp::NumericMatrix tX_cont,
                                  Rcpp::IntegerMatrix tX_cat,

@@ -14,7 +14,8 @@ average_tree_fits(fit,
                   X_cat = matrix(0, nrow = 1, ncol = 1),
                   quantiles = c(0.05, 0.95),
                   weights = NULL,
-                  verbose = TRUE, print_every = floor(max(c(nrow(X_cont), nrow(X_cat)))/10))
+                  verbose = TRUE, 
+                  print_every = floor(max(c(nrow(X_cont), nrow(X_cat)))/10))
 }
 \arguments{
   \item{fit}{Object returned by \code{flexBCF}.}

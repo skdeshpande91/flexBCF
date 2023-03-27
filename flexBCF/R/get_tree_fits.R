@@ -2,8 +2,8 @@ get_tree_fits <- function(fit,
                           type = c("mu","tau"),
                           X_cont = matrix(0, nrow = 1, ncol = 1),
                           X_cat = matrix(0, nrow = 1, ncol = 1),
-                          verobse = TRUE, 
-                          print_every = floor(max(nrow(X_cont), nrow(X_cat))/10))
+                          verbose = TRUE, 
+                          print_every = floor(max(c(nrow(X_cont), nrow(X_cat)))/10))
 {
   
   n <- max(c(nrow(X_cont), nrow(X_cat)))
@@ -21,7 +21,7 @@ get_tree_fits <- function(fit,
                                     y_mean = fit$y_mean,
                                     y_sd = fit$y_sd,
                                     cat_levels_list = fit$cat_levels_list[["mu"]],
-                                    verbose = verobse, print_every = print_every)
+                                    verbose = verbose, print_every = print_every)
     } else if(type == "tau"){
       tmp <- .predict_tree_ensemble(tree_draws = fit$tau_trees,
                                     tX_cont = t(X_cont),
@@ -30,7 +30,7 @@ get_tree_fits <- function(fit,
                                     y_mean = fit$y_mean,
                                     y_sd = fit$y_sd,
                                     cat_levels_list = fit$cat_levels_list[["tau"]],
-                                    verbose = verobse, print_every = print_every)
+                                    verbose = verbose, print_every = print_every)
     } else{
       stop("type must be one of mu or tau")
     }

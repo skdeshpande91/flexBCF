@@ -28,7 +28,7 @@ average_tree_fits <- function(fit,
                                     cat_levels_list = fit$cat_levels_list$mu,
                                     verbose = verbose, print_every = print_every)
     } else if(type == "tau"){
-      tmp <- .compute_weightedSATT(tree_draws = fit$tau_trees,
+      tmp <- .compute_weighted_SATT(tree_draws = fit$tau_trees,
                                    tX_cont = t(X_cont),
                                    tX_cat = t(X_cat),
                                    treat = FALSE,

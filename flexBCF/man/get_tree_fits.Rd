@@ -12,7 +12,8 @@ get_tree_fits(fit,
               type = c("mu","tau"),
               X_cont = matrix(0, nrow = 1, ncol = 1),
               X_cat = matrix(0, nrow = 1, ncol = 1),
-              verbose = TRUE, print_every = floor(max(c(nrow(X_cont), nrow(X_cat)))/10))
+              verbose = TRUE, 
+              print_every = floor(max(c(nrow(X_cont), nrow(X_cat)))/10))
 }
 \arguments{
   \item{fit}{Object returned by \code{flexBCF}.}

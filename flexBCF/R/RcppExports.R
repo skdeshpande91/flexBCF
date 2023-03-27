@@ -9,7 +9,7 @@
     .Call('_flexBCF_compute_weighted_SATT', PACKAGE = 'flexBCF', tree_draws, tX_cont, tX_cat, weights, treat, y_mean, y_sd, probs, cat_levels_list, verbose, print_every)
 }
 
-.flex_BCF <- function(Y_train, treated, tX_cont_mu_train, tX_cat_mu_train, tX_cont_tau_train, tX_cat_tau_train, unif_cuts_mu, unif_cuts_tau, cutpoints_list_mu, cutpoints_list_tau, cat_levels_list_mu, cat_levels_list_tau, graph_split_mu, graph_split_tau, graph_cut_type_mu, graph_cut_type_tau, adj_support_list_mu, adj_support_list_tau, sparse, a_u, b_u, mu0, tau, lambda, nu, M_mu, M_tau, nd, burn, thin, verbose, print_every) {
+.flexBCF <- function(Y_train, treated, tX_cont_mu_train, tX_cat_mu_train, tX_cont_tau_train, tX_cat_tau_train, unif_cuts_mu, unif_cuts_tau, cutpoints_list_mu, cutpoints_list_tau, cat_levels_list_mu, cat_levels_list_tau, graph_split_mu, graph_split_tau, graph_cut_type_mu, graph_cut_type_tau, adj_support_list_mu, adj_support_list_tau, sparse, a_u, b_u, mu0, tau, lambda, nu, M_mu, M_tau, nd, burn, thin, verbose, print_every) {
     .Call('_flexBCF_flexBCF', PACKAGE = 'flexBCF', Y_train, treated, tX_cont_mu_train, tX_cat_mu_train, tX_cont_tau_train, tX_cat_tau_train, unif_cuts_mu, unif_cuts_tau, cutpoints_list_mu, cutpoints_list_tau, cat_levels_list_mu, cat_levels_list_tau, graph_split_mu, graph_split_tau, graph_cut_type_mu, graph_cut_type_tau, adj_support_list_mu, adj_support_list_tau, sparse, a_u, b_u, mu0, tau, lambda, nu, M_mu, M_tau, nd, burn, thin, verbose, print_every)
 }
 

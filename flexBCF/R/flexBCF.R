@@ -19,7 +19,7 @@ flexBCF <- function(Y_train,
   # Standardize the Y's
   y_mean <- mean(Y_train)
   y_sd <- stats::sd(Y_train)
-  std_Y_train <- (Y_train - y_mean)/y_sd
+  std_Y <- (Y_train - y_mean)/y_sd
   nu <- 3
   lambda <- stats::qchisq(0.1, df = nu)/nu
   mu0 <- c(0,0)
