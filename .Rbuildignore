@@ -1,4 +1,5 @@
 ^src/*.o$
+^.gitignore$
 ^\.github$
 ^README\.md$
 ^NEWS\.md$
