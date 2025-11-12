@@ -1,4 +1,12 @@
 # flexBCF
+<!-- badges: start -->
+  [![R-CMD-check](https://github.com/skdeshpande91/flexBCF/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/skdeshpande91/flexBCF/actions/workflows/R-CMD-check.yaml)
+  [![CRAN status](https://www.r-pkg.org/badges/version/flexBCF)](https://CRAN.R-project.org/package=flexBCF)
+[![R-CMD-check](https://github.com/skdeshpande91/flexBCF/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/skdeshpande91/flexBCF/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
+
+
+
 Faster and more flexible implementation of Bayesian Causal Forests
 
 This implementation was created as part of the 2022 American Causal Inference Competition (ACIC) Data Challenge.
