@@ -8,5 +8,5 @@ Note that **flexBCF** implements a slightly different model than what is provide
 
 You can install **flexBCF** using
 ```
-devtools::install_github(repo = "skdeshpande91/flexBCF", subdir = "flexBCF")
+devtools::install_github(repo = "skdeshpande91/flexBCF")
 ```
