@@ -2,6 +2,8 @@
 .Rhistory
 .Rapp.history
 
+*.tar.gz
+
 # Session Data files
 .RData
 
