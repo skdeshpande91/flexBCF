@@ -7,6 +7,7 @@ A faster and more flexible Bayesian Causal Forests
 \description{
 Implements a version of Hahn et al. (2020)'s Bayesian Causal Forest (BCF) model that is faster and handles categorical outcomes more flexibly than existing BCF implementations. 
 This implementation was created for the 2022 American Causal Inference Conference's Data Challenge.
+See Kokandakar et al. (2023) for details about the implementation and results from the competition.
 }
 \usage{
 flexBCF(Y_train,
@@ -49,13 +50,13 @@ flexBCF(Y_train,
   \item{print_every}{As the MCMC runs, a message is printed every \code{print_every} iterations. Default is \code{floor( (nd*thin + burn)/10)} so that only 10 messages are printed.}
 }
 \details{
-The Bayesian Causal Forest (BCF) model of Hahn et al. (2022) expresses the conditional expectation of a response $Y$ given covariates $X$ and binary treament $Z$ as
+The Bayesian Causal Forest (BCF) model of Hahn et al. (2022) expresses the conditional expectation of a response \eqn{Y}{Y} given covariates \eqn{X}{X} and binary treament \eqn{Z}{Z} as
 \eqn{E[Y | X, Z] = \mu(X) + \tau(X) * Z}{E[Y|X,Z] = mu(X) + tau(X) * Z} and approximates both \eqn{\mu(X)}{mu(X)} and \eqn{\tau(X)}{tau(X)} with ensembles of binary regression trees.
 Under standard identifying assumptions, \eqn{\mu}{mu} is the prognostic function \eqn{\mu(X) = E[Y(0) \vert X =x]}{mu(X) = E[Y(0) | X = x]} and \eqn{\tau}{tau} is the conditional average treatment effect function \eqn{\tau(X) = E[Y(1) - Y(0) \vert X]}{tau(X) = E[Y(1) - Y(0)|X]}, where \eqn{Y(0)}{Y(0)} and \eqn{Y(1)}{Y(1)} are the potential outcomes under control and treatment.
 
-Like the original BCF implementation, \code{flex_BCF()} simulates a Markov chain (written in C++) to compute approximate posterior draws of \eqn{\mu(X)}(mu(X)) and \eqn{\tau(X)}{tau(X)}.
+Like the original BCF implementation, \code{flex_BCF()} simulates a Markov chain to compute approximate posterior draws of \eqn{\mu(X)}{mu(X)} and \eqn{\tau(X)}{tau(X)}.
 By avoiding several redundant internal computations and memory allocations, \code{flex_BCF()} is much faster and scales more gracefully to large datasets than the original BCF implementation.
-It is also based on a new prior for regression trees that permits more flexible \dQuote{borrowing of strength} across levels of categorical predictors.
+It is also based on a new regression tree prior (described in Deshpande (2025)) that permits more flexible \dQuote{borrowing of strength} across levels of categorical predictors.
 Under the new prior conditional on splitting on a categorical predictor at a particular node in the tree, levels of the predictor are sent to the left and right child uniformly at random. 
 
 To reduce its memory footprint, \code{flex_BCF()} only returns posterior samples of the trees used to approximate \eqn{\mu(X)}{mu(X)} and \eqn{\tau(X)}{tau(X)}.
@@ -96,15 +97,15 @@ mu_func <- function(X_cont_mu, X_cat_mu){
   tmp3 <- scaled_X_cont[,4]
   tmp4 <- scaled_X_cont[,5]
   return(1 * tmp1 + 
-           2 * (X_cat_mu[,1] %in% c(0, 2, 4,6,8)) * tmp2 +
-           1 * (X_cat_mu[,2] %in% c(1,2,3,6,7,8)) * tmp3 + 
-           0.5 * (X_cat_mu[,1] %in% c(1,2,3,4,5)) * tmp4)
+           2 * (X_cat_mu[,1] \%in\% c(0, 2, 4,6,8)) * tmp2 +
+           1 * (X_cat_mu[,2] \%in\% c(1,2,3,6,7,8)) * tmp3 + 
+           0.5 * (X_cat_mu[,1] \%in\% c(1,2,3,4,5)) * tmp4)
 }
 
 tau_func <- function(X_cont_tau, X_cat_tau){
   scaled_X_cont <- (X_cont_tau + 1)/2 # moves it to [0,1]
   z1 <- scaled_X_cont[,1]
-  z2 <- 1*(X_cat_tau[,1] %in% c(0,1,2,8,9))
+  z2 <- 1*(X_cat_tau[,1] \%in\% c(0,1,2,8,9))
   return(3 * z1 + (2 - 5*z2)*sin(pi * z1) - 2 * (z2))
 }
 
@@ -179,4 +180,7 @@ Hahn, P.R., Murray, J.S., and Carvalho, C.M. (2020). Bayesian regression tree mo
 
 Kokandakar, A.H., Kang, H., and Deshpande, S.K. (2023). Bayesian Causal Forests & the 2022 ACIC Data Challenge: Scalability and Sensitivity. 
 \emph{Observational Studies}. \bold{9}(3):29--41. \doi{doi:10.1353/obs.2023.0024}.
+
+Deshpande, S.K. (2025). flexBART: Flexible Bayesian regression trees with categorical predictors.
+\emph{Journal of Computational and Graphical Statistics}. \bold{34}(3):1117--1126. \doi{doi:10.1080/10618600.2024.2431072}.
 }
