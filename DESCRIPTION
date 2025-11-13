@@ -10,4 +10,4 @@ Description: A faster and more flexible implementation of Bayesian Causal Forest
 License: GPL (>= 3)
 LinkingTo: Rcpp, RcppArmadillo
 Imports: Rcpp
-URL: https://skdeshpande91.github.io/flexBCF/
+URL: https://github.com/skdeshpande91/flexBCF
