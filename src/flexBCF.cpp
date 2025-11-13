@@ -199,7 +199,6 @@ Rcpp::List flexBCF(Rcpp::NumericVector Y_train,
   int total_draws = 1 + burn + (nd-1)*thin;
   int sample_index = 0;
   int accept = 0;
-  int total_accept = 0; // counts how many trees we change in each iteration
   tree::npv bnv; // for checking that our ss map and our trees are not totally and utterly out of sync
   double tmp_mu; // for holding the value of mu when we're doing the backfitting
   
@@ -253,7 +252,6 @@ Rcpp::List flexBCF(Rcpp::NumericVector Y_train,
     }
     
     // loop over the mu trees first
-    total_accept = 0;
     for(int m = 0; m < M_mu; m++){
       for(suff_stat_it ss_it = ss_train_mu_vec[m].begin(); ss_it != ss_train_mu_vec[m].end(); ++ss_it){
         // loop over the bottom nodes in m-th tree
@@ -268,7 +266,6 @@ Rcpp::List flexBCF(Rcpp::NumericVector Y_train,
       } // this whole loop is O(n)
       
       update_tree_mu(t_mu_vec[m], ss_train_mu_vec[m], accept, sigma, di_train, tree_pi_mu, gen); // update the tree
-      total_accept += accept;
   
       // now we need to update the value of allfit
       for(suff_stat_it ss_it = ss_train_mu_vec[m].begin(); ss_it != ss_train_mu_vec[m].end(); ++ss_it){
@@ -298,7 +295,6 @@ Rcpp::List flexBCF(Rcpp::NumericVector Y_train,
       } // this whole loop is O(n)
       
       update_tree_tau(t_tau_vec[m], ss_train_tau_vec[m], accept, sigma, di_train, tree_pi_tau, gen); // update the tree
-      total_accept += accept;
   
       // now we need to update the value of allfit
       for(suff_stat_it ss_it = ss_train_tau_vec[m].begin(); ss_it != ss_train_tau_vec[m].end(); ++ss_it){
@@ -338,19 +334,6 @@ Rcpp::List flexBCF(Rcpp::NumericVector Y_train,
       for(int m = 0; m < M_tau; m++) tau_tree_string_vec[m] = write_tree(t_tau_vec[m], tree_pi_tau, set_str);
       mu_tree_draws[sample_index] = mu_tree_string_vec;
       tau_tree_draws[sample_index] = tau_tree_string_vec; // dump a character vector holding each tree's draws into an element of an Rcpp::List
-      
-      /*
-      //  for debugging purposes only!
-      for(int m = 0; m < M_tau; m++){
-        for(suff_stat_it ss_it = ss_train_tau_vec[m].begin(); ss_it != ss_train_tau_vec[m].end(); ++ss_it){
-          tmp_mu = t_tau_vec[m].get_ptr(ss_it->first)->get_mu();
-          for(int_it it = ss_it->second.begin(); it != ss_it->second.end(); ++it){
-            tau_fit_samples(sample_index,*it) += tmp_mu;
-          }
-        }
-      }
-      
-       */
     } // closes if that checks whether we should save anything in this iteration
   } // closes the main MCMC for loop
 
@@ -360,6 +343,5 @@ Rcpp::List flexBCF(Rcpp::NumericVector Y_train,
   results["tau"] = tau_tree_draws;
   results["varcount_mu"] = var_count_samples_mu;
   results["varcount_tau"] = var_count_samples_tau;
-  //results["tau_fit"] = tau_fit_samples;
   return results;
 }

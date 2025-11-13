@@ -3,7 +3,7 @@ get_tree_fits <- function(fit,
                           X_cont = matrix(0, nrow = 1, ncol = 1),
                           X_cat = matrix(0, nrow = 1, ncol = 1),
                           verbose = TRUE, 
-                          print_every = floor(max(c(nrow(X_cont), nrow(X_cat)))/10))
+                          print_every = NULL)
 {
   
   n <- max(c(nrow(X_cont), nrow(X_cat)))
@@ -14,6 +14,8 @@ get_tree_fits <- function(fit,
     stop("Computing average effects with n = 1 subject is not currently supported")
   } else{
     if(type == "mu"){
+      
+      if(is.null(print_every)) print_every <- floor(length(fit$mu_trees)/10)
       tmp <- .predict_tree_ensemble(tree_draws = fit$mu_trees,
                                     tX_cont = t(X_cont),
                                     tX_cat = t(X_cat),
@@ -23,6 +25,7 @@ get_tree_fits <- function(fit,
                                     cat_levels_list = fit$cat_levels_list[["mu"]],
                                     verbose = verbose, print_every = print_every)
     } else if(type == "tau"){
+      if(is.null(print_every)) print_every <- floor(length(fit$tau_trees)/10)
       tmp <- .predict_tree_ensemble(tree_draws = fit$tau_trees,
                                     tX_cont = t(X_cont),
                                     tX_cat = t(X_cat),
