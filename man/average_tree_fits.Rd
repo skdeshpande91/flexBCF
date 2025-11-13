@@ -37,5 +37,3 @@ A list containing
 \item{mean}{Posterior mean estimate of the desired average treatment (or prognostic) effect}
 \item{quantiles}{Posterior quantiles of the desired average treatment (or prognostic) effect.}
 }
-
-}
