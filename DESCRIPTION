@@ -5,7 +5,7 @@ Version: 1.0
 Date: 2025-11-13
 Authors@R: c(
   person(given = "Sameer K.", family = "Deshpande", role = c("aut", "cre"), email = "sameer.deshpande@wisc.edu", comment = c(ORCID = "0000-0003-4116-5533")),
-  person(given = "Ajinkya H.", family = "Kokandakar", role = c("aut"), email = "", comment = c(ORCID = "0000-0001-6628-2272")))
+  person(given = "Ajinkya H.", family = "Kokandakar", role = c("aut"), email = "ajinkyakokandakar@gmail.com", comment = c(ORCID = "0000-0001-6628-2272")))
 Description: A faster and more flexible implementation of Bayesian Causal Forests, originally  written for the 2022 ACIC Data Challenge.
 License: GPL (>= 3)
 LinkingTo: Rcpp, RcppArmadillo
