@@ -11,7 +11,7 @@ flexBCF <- function(Y_train,
                     cat_levels_list_mu = NULL,
                     cat_levels_list_tau = NULL,
                     sparse = TRUE, 
-                    M_mu = 200, M_tau = 200,
+                    M_mu = 50, M_tau = 50,
                     nd = 1000, burn = 1000, thin = 1,
                     verbose = TRUE, print_every = floor( (nd*thin + burn))/10)
 {
