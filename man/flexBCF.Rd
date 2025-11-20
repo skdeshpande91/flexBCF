@@ -81,7 +81,7 @@ A list containing
 }
 
 \examples{
-\dontrun{
+\donttest{
 p_cont_mu <- 5
 p_cat_mu <- 5
 p_mu <- p_cont_mu + p_cat_mu
