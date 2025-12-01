@@ -81,7 +81,6 @@ A list containing
 }
 
 \examples{
-\donttest{
 p_cont_mu <- 5
 p_cat_mu <- 5
 p_mu <- p_cont_mu + p_cat_mu
@@ -109,8 +108,8 @@ tau_func <- function(X_cont_tau, X_cat_tau){
   return(3 * z1 + (2 - 5*z2)*sin(pi * z1) - 2 * (z2))
 }
 
-n_control <- 20000
-n_treat <- 10000
+n_control <- 200
+n_treat <- 100
 n <- n_control+ n_treat
 
 treated <- c(rep(0, times = n_control), rep(1, times = n_treat))
@@ -143,8 +142,23 @@ set.seed(328)
 sigma <- 0.1
 Y <- mean_response + sigma * rnorm(n = n, mean = 0, sd = 1)
 
+## Token run to test installation
+fit <- 
+  flexBCF(Y_train = Y, 
+          treated = treated,
+          X_cont_mu = X_cont_mu,
+          X_cat_mu = X_cat_mu,
+          X_cont_tau = X_cont_tau,
+          X_cat_tau = X_cat_tau,
+          cat_levels_list_mu = cat_levels_list_mu,
+          cat_levels_list_tau = cat_levels_list_tau,
+          nd = 5, burn = 5,
+          sparse = TRUE, M_mu = 50, M_tau = 50)
 
 
+\donttest{
+
+## Longer example
 fit <- 
   flexBCF(Y_train = Y, 
           treated = treated,
@@ -162,15 +176,23 @@ mu_samples <-
   get_tree_fits(fit = fit, type = c("mu"),
                 X_cont = X_cont_mu,
                 X_cat = X_cat_mu)
-
-plot(mu_true, colMeans(mu_samples), pch = 16, cex = 0.2)
-
 tau_samples <-
   get_tree_fits(fit = fit, type = c("tau"),
                 X_cont = X_cont_tau,
                 X_cat = X_cat_tau)
-plot(tau_true, colMeans(tau_samples), pch = 16, cex = 0.2)
 
+oldpar <- par(no.readonly = TRUE)                
+par(mar = c(3,3,2,1), mgp = c(1.8, 0.5, 0), mfrow = c(1,2))
+plot(mu_true, colMeans(mu_samples), pch = 16, cex = 0.2,
+     xlab = "Actual", ylab = "Posterior Mean",
+     main = "Prognostic Function (mu)")
+abline(a = 0, b = 1, col = "blue")
+
+plot(tau_true, colMeans(tau_samples), pch = 16, cex = 0.2,
+     xlab = "Actual", ylab = "Posterior Mean",
+     main = "Conditional Average Treatment Effect (tau)")
+abline(a = 0, b = 1, col = "blue")
+par(oldpar)
 }
 }
 

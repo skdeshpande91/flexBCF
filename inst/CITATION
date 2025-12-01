@@ -3,7 +3,7 @@ bibentry(bibtype="Manual",
   author = c(person(c("Sameer", "K"), "Deshpande"), 
              person(c("Ajinkya", "H"), "Kokandakar")),
   year = "2025",
-  note="R package version 1.0.0")
+  note="R package version 1.0.3")
 
 
 
